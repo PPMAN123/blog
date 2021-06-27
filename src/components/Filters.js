@@ -16,7 +16,7 @@ const Filters = () => {
   const { allSanityAuthor, allSanityCategory } = useStaticQuery(graphql`
     query {
       allSanityAuthor {
-        node {
+        nodes {
           name
           id
         }
