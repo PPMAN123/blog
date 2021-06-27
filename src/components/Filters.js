@@ -12,7 +12,7 @@ const FilterTypeHeader = styled.h3`
   font-size: 1.5rem;
   margin: 1rem;
 `;
-const Filters = () => {
+const Filters = ({ selections, setSelections }) => {
   const { allSanityAuthor, allSanityCategory } = useStaticQuery(graphql`
     query {
       allSanityAuthor {
@@ -30,12 +30,11 @@ const Filters = () => {
     }
   `);
 
-  const [selections, setSelections] = useState({});
-
   useEffect(() => {
     if (allSanityAuthor && allSanityAuthor.nodes.length > 0) {
       const newSelections = allSanityAuthor.nodes.reduce((acc, author) => {
         acc[author.id] = {
+          type: 'author',
           name: author.name,
           checked: false,
         };
@@ -49,6 +48,7 @@ const Filters = () => {
     if (allSanityCategory && allSanityCategory.nodes.length > 0) {
       const newSelections = allSanityCategory.nodes.reduce((acc, category) => {
         acc[category.id] = {
+          type: 'category',
           name: category.name,
           checked: false,
         };
@@ -65,6 +65,7 @@ const Filters = () => {
     setSelections((prevSelections) => ({
       ...prevSelections,
       [id]: {
+        type: prevSelections[id].type,
         name: prevSelections[id].name,
         checked: !prevSelections[id].checked,
       },
@@ -76,16 +77,16 @@ const Filters = () => {
       {allSanityCategory.nodes.map((category) => (
         <Checkbox
           label={category.title}
-          checked={selections[category.id].checked}
-          onChange={toggle(category.id)}
+          checked={selections[category.id]?.checked}
+          onChange={() => toggle(category.id)}
         />
       ))}
       <FilterTypeHeader>Authors</FilterTypeHeader>
       {allSanityAuthor.nodes.map((author) => (
         <Checkbox
-          label={author.title}
-          checked={selections[author.id].checked}
-          onChange={toggle(author.id)}
+          label={author.name}
+          checked={selections[author.id]?.checked}
+          onChange={() => toggle(author.id)}
         />
       ))}
     </Container>

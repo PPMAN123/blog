@@ -1,8 +1,9 @@
 import React from 'react';
 import { useStaticQuery, graphql, Link } from 'gatsby';
 import styled from 'styled-components';
-import { Card, Button } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import { IoIosMore } from 'react-icons/io';
+import BlogPreview from './BlogPreview';
 
 const BlogPreviewContainer = styled.section`
   flex-direction: column;
@@ -124,42 +125,8 @@ const RecentBlogs = () => {
     <BlogPreviewContainer>
       <Title>Recent Blogs</Title>
       <Card.Group stackable itemsPerRow={4} style={{ width: '100%' }}>
-        {posts.map((posts) => (
-          <Card key={posts.slug.current}>
-            <StyledImage src={posts.mainImage.asset.url} wrapped ui={false}>
-              <StyledLink to={`/${posts.slug.current}/`}>Learn More</StyledLink>
-            </StyledImage>
-            <Card.Content>
-              <Card.Header>
-                <Link color="black" to={`/${posts.slug.current}/`}>
-                  {posts.title}
-                </Link>
-              </Card.Header>
-              <Card.Meta>
-                <Link to={`/${posts.author.slug.current}/`}>
-                  {posts.author.name}
-                </Link>
-              </Card.Meta>
-              <Card.Description>{posts._updatedAt}</Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              {posts.categories.map((category) => (
-                <React.Fragment>
-                  <Button
-                    style={{ margin: '3px' }}
-                    size={'tiny'}
-                    color={category.colour}
-                    as={Link}
-                    to={`/${category.slug.current}/`}
-                  >
-                    {category.title}
-                  </Button>
-                </React.Fragment>
-              ))}
-            </Card.Content>
-          </Card>
-        ))}
-        <ViewMoreLink to="/">
+        <BlogPreview posts={posts} />
+        <ViewMoreLink to="/blogs">
           <IoIosMore />
         </ViewMoreLink>
       </Card.Group>
