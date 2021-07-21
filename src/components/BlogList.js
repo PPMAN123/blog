@@ -3,10 +3,10 @@ import { useStaticQuery, graphql } from 'gatsby';
 import { Card } from 'semantic-ui-react';
 import BlogPreview from './BlogPreview';
 
-const BlogList = ({ selections }) => {
+const BlogList = ({ selectedFilters }) => {
   const { allSanityPost } = useStaticQuery(graphql`
     query {
-      allSanityPost(sort: { order: ASC, fields: _createdAt }, limit: 3) {
+      allSanityPost(sort: { order: ASC, fields: _createdAt }) {
         nodes {
           title
           categories {
@@ -38,30 +38,51 @@ const BlogList = ({ selections }) => {
     }
   `);
 
+  const allCategoryIds = allSanityPost.nodes.reduce((acc, post) => {
+    post.categories.forEach((category) => acc.add(category.id));
+    return acc;
+  }, new Set());
+
+  const allAuthorIds = allSanityPost.nodes.reduce((acc, post) => {
+    acc.add(post.author.id);
+    return acc;
+  }, new Set());
+
   const resultBlogSet = allSanityPost.nodes.filter((post) => {
     const postCategoryIds = post.categories.map((category) => category.id);
     const authorId = post.author.id;
 
-    const allCheckedCategories = Object.keys(selections).filter(
-      (categoryId) => {
-        const { checked, type } = selections[categoryId];
-        return checked && type === 'category';
-      }
+    const allPostCategoriesIncluded = selectedFilters.every(
+      (filterId) =>
+        postCategoryIds.includes(filterId) || allAuthorIds.has(filterId)
     );
 
-    const matchesCategoryFilter =
-      allCheckedCategories.every((categoryId) =>
-        postCategoryIds.includes(categoryId)
-      ) ||
-      Object.values(selections)
-        .filter(({ type }) => type === 'category')
-        .every(({ checked }) => !checked);
+    let noCategoriesSelected = true;
+    if (!matchesCategoryFilter) {
+      allCategoryIds.forEach((categoryId) => {
+        if (selectedFilters.includes(categoryId)) {
+          noCategoriesSelected = false;
+        }
+      });
+    }
 
-    const matchesAuthorId =
-      selections[authorId]?.checked ||
-      Object.values(selections)
-        .filter(({ type }) => type === 'author')
-        .every(({ checked }) => !checked);
+    const matchesCategoryFilter =
+      allPostCategoriesIncluded || noCategoriesSelected;
+
+    let authorIdSelected = selectedFilters.includes(authorId);
+
+    let noAuthorsSelected = true;
+
+    if (!matchesAuthorId) {
+      allAuthorIds.forEach((authorId) => {
+        if (selectedFilters.includes(authorId)) {
+          noAuthorsSelected = false;
+        }
+      });
+    }
+
+    const matchesAuthorId = authorIdSelected || noAuthorsSelected;
+
     return matchesCategoryFilter && matchesAuthorId;
   });
   return (

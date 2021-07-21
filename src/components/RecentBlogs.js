@@ -93,6 +93,7 @@ const RecentBlogs = () => {
         nodes {
           title
           categories {
+            id
             title
             colour
             slug {
@@ -108,6 +109,7 @@ const RecentBlogs = () => {
             current
           }
           author {
+            id
             name
             slug {
               current

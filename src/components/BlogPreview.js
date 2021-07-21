@@ -50,7 +50,7 @@ const StyledImage = styled.figure`
   }
 `;
 
-const BlogPreview = ({ posts }) => {
+const BlogPreview = ({ posts, setSelectionsCouter }) => {
   return posts.map((posts) => (
     <Card key={posts.slug.current}>
       <StyledImage src={posts.mainImage.asset.url} wrapped ui={false}>
@@ -63,7 +63,9 @@ const BlogPreview = ({ posts }) => {
           </Link>
         </Card.Header>
         <Card.Meta>
-          <Link to={`/${posts.author.slug.current}/`}>{posts.author.name}</Link>
+          <Link to={`/blogs/?filters=${posts.author.id}`}>
+            {posts.author.name}
+          </Link>
         </Card.Meta>
         <Card.Description>{posts._updatedAt}</Card.Description>
       </Card.Content>
@@ -75,7 +77,7 @@ const BlogPreview = ({ posts }) => {
               size={'tiny'}
               color={category.colour}
               as={Link}
-              to={`/${category.slug.current}/`}
+              to={`/blogs/?filters=${category.id}`}
             >
               {category.title}
             </Button>

@@ -12,7 +12,7 @@ const FilterTypeHeader = styled.h3`
   font-size: 1.5rem;
   margin: 1rem;
 `;
-const Filters = ({ selections, setSelections }) => {
+const Filters = ({ toggleSelection, getFilterState }) => {
   const { allSanityAuthor, allSanityCategory } = useStaticQuery(graphql`
     query {
       allSanityAuthor {
@@ -30,63 +30,22 @@ const Filters = ({ selections, setSelections }) => {
     }
   `);
 
-  useEffect(() => {
-    if (allSanityAuthor && allSanityAuthor.nodes.length > 0) {
-      const newSelections = allSanityAuthor.nodes.reduce((acc, author) => {
-        acc[author.id] = {
-          type: 'author',
-          name: author.name,
-          checked: false,
-        };
-        return acc;
-      }, {});
-      setSelections((prevSelections) => ({
-        ...prevSelections,
-        ...newSelections,
-      }));
-    }
-    if (allSanityCategory && allSanityCategory.nodes.length > 0) {
-      const newSelections = allSanityCategory.nodes.reduce((acc, category) => {
-        acc[category.id] = {
-          type: 'category',
-          name: category.name,
-          checked: false,
-        };
-        return acc;
-      }, {});
-      setSelections((prevSelections) => ({
-        ...prevSelections,
-        ...newSelections,
-      }));
-    }
-  }, [allSanityAuthor, allSanityCategory]);
-
-  const toggle = (id) => {
-    setSelections((prevSelections) => ({
-      ...prevSelections,
-      [id]: {
-        type: prevSelections[id].type,
-        name: prevSelections[id].name,
-        checked: !prevSelections[id].checked,
-      },
-    }));
-  };
   return (
     <Container>
       <FilterTypeHeader>Categories</FilterTypeHeader>
       {allSanityCategory.nodes.map((category) => (
         <Checkbox
           label={category.title}
-          checked={selections[category.id]?.checked}
-          onChange={() => toggle(category.id)}
+          checked={getFilterState(category.id)}
+          onChange={() => toggleSelection(category.id)}
         />
       ))}
       <FilterTypeHeader>Authors</FilterTypeHeader>
       {allSanityAuthor.nodes.map((author) => (
         <Checkbox
           label={author.name}
-          checked={selections[author.id]?.checked}
-          onChange={() => toggle(author.id)}
+          checked={getFilterState(author.id)}
+          onChange={() => toggleSelection(author.id)}
         />
       ))}
     </Container>
