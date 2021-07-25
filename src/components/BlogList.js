@@ -73,6 +73,8 @@ const BlogList = ({ selectedFilters }) => {
 
     let noAuthorsSelected = true;
 
+    const matchesAuthorId = authorIdSelected || noAuthorsSelected;
+
     if (!matchesAuthorId) {
       allAuthorIds.forEach((authorId) => {
         if (selectedFilters.includes(authorId)) {
@@ -80,8 +82,6 @@ const BlogList = ({ selectedFilters }) => {
         }
       });
     }
-
-    const matchesAuthorId = authorIdSelected || noAuthorsSelected;
 
     return matchesCategoryFilter && matchesAuthorId;
   });
