@@ -57,6 +57,9 @@ const BlogList = ({ selectedFilters }) => {
         postCategoryIds.includes(filterId) || allAuthorIds.has(filterId)
     );
 
+    const matchesCategoryFilter =
+      allPostCategoriesIncluded || noCategoriesSelected;
+
     let noCategoriesSelected = true;
     if (!matchesCategoryFilter) {
       allCategoryIds.forEach((categoryId) => {
@@ -65,9 +68,6 @@ const BlogList = ({ selectedFilters }) => {
         }
       });
     }
-
-    const matchesCategoryFilter =
-      allPostCategoriesIncluded || noCategoriesSelected;
 
     let authorIdSelected = selectedFilters.includes(authorId);
 
