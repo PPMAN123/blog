@@ -57,17 +57,16 @@ const BlogList = ({ selectedFilters }) => {
         postCategoryIds.includes(filterId) || allAuthorIds.has(filterId)
     );
 
+    let noCategoriesSelected = true;
+
+    allCategoryIds.forEach((categoryId) => {
+      if (selectedFilters.includes(categoryId)) {
+        noCategoriesSelected = false;
+      }
+    });
+
     const matchesCategoryFilter =
       allPostCategoriesIncluded || noCategoriesSelected;
-
-    let noCategoriesSelected = true;
-    if (!matchesCategoryFilter) {
-      allCategoryIds.forEach((categoryId) => {
-        if (selectedFilters.includes(categoryId)) {
-          noCategoriesSelected = false;
-        }
-      });
-    }
 
     let authorIdSelected = selectedFilters.includes(authorId);
 
@@ -75,13 +74,11 @@ const BlogList = ({ selectedFilters }) => {
 
     const matchesAuthorId = authorIdSelected || noAuthorsSelected;
 
-    if (!matchesAuthorId) {
-      allAuthorIds.forEach((authorId) => {
-        if (selectedFilters.includes(authorId)) {
-          noAuthorsSelected = false;
-        }
-      });
-    }
+    allAuthorIds.forEach((authorId) => {
+      if (selectedFilters.includes(authorId)) {
+        noAuthorsSelected = false;
+      }
+    });
 
     return matchesCategoryFilter && matchesAuthorId;
   });
