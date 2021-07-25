@@ -42,10 +42,15 @@ const StyledBody = styled.main`
 
 const Nav = ({ children }) => {
   const [visible, setVisible] = React.useState(false);
+  const [tick, setTick] = React.useState(false);
   const handleMenuClick = (e, linkTO) => {
     e.preventDefault();
     navigate(linkTO);
   };
+
+  React.useEffect(() => {
+    setTick(true);
+  }, []);
 
   return (
     <Sidebar.Pushable>
@@ -55,7 +60,7 @@ const Nav = ({ children }) => {
         icon="labeled"
         inverted
         onHide={() => setVisible(false)}
-        vertical
+        vertical={tick}
         visible={visible}
         width="thin"
       >
