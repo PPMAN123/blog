@@ -9,22 +9,30 @@ export type PortableTextType = {
 };
 
 export type Serializer = {
-  blockQuote: BlockQuoteSerializer;
-  section: SectionSerializer;
-  centerAlign: TextWrapperSerializer;
-  rightAlign: TextWrapperSerializer;
-  normal: TextWrapperSerializer;
+  types: {
+    blockQuote: BlockQuoteSerializer;
+    section: SectionSerializer;
+  };
+  marks: {
+    centerAlign: TextWrapperSerializer;
+    rightAlign: TextWrapperSerializer;
+    normal: TextWrapperSerializer;
+  };
 };
 
 export type BlockQuote = {
-  message: string;
-  authorName: string;
+  node: {
+    message: string;
+    authorName: string;
+  };
 };
 
 export type Section = {
-  leftContent: [SanityDataContent];
-  rightContent: [SanityDataContent];
-  type: ContentWidthRules;
+  node: {
+    leftContent: [SanityDataContent];
+    rightContent: [SanityDataContent];
+    type: ContentWidthRules;
+  };
 };
 
 export type BlockQuoteSerializer = (object: BlockQuote) => JSX.Element;

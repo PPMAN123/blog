@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql, PageProps } from 'gatsby';
-import PortableText from 'react-portable-text';
+import PortableText from '@sanity/block-content-to-react';
 import styled from 'styled-components';
 import { GatsbyImage, getImage, IGatsbyImageData } from 'gatsby-plugin-image';
 import Quote from '../components/StyledBlocks/Quote';
@@ -50,38 +50,42 @@ const Title = styled.h1`
 `;
 
 const serializers: Serializer = {
-  blockQuote: ({ message, authorName }) => {
-    return <Quote message={message} author={authorName} />;
+  types: {
+    blockQuote: ({ node: { message, authorName } }) => {
+      return <Quote message={message} author={authorName} />;
+    },
+    section: ({ node: { leftContent, rightContent, type } }) => {
+      return (
+        <Section
+          leftChildren={
+            <PortableText
+              className="temp"
+              blocks={leftContent}
+              serializers={serializers}
+            />
+          }
+          rightChildren={
+            <PortableText
+              className="temp"
+              blocks={rightContent}
+              serializers={serializers}
+            />
+          }
+          type={type}
+        />
+      );
+    },
   },
-  section: ({ leftContent, rightContent, type }) => {
-    return (
-      <Section
-        leftChildren={
-          <PortableText
-            className="temp"
-            content={leftContent}
-            serializers={serializers}
-          />
-        }
-        rightChildren={
-          <PortableText
-            className="temp"
-            content={rightContent}
-            serializers={serializers}
-          />
-        }
-        type={type}
-      />
-    );
-  },
-  centerAlign: ({ children }) => {
-    return <span style={{ margin: '0 auto' }}>{children}</span>;
-  },
-  rightAlign: ({ children }) => {
-    return <span style={{ marginLeft: 'auto' }}>{children}</span>;
-  },
-  normal: ({ children }) => {
-    return <p style={{ display: 'flex', width: '100%' }}>{children}</p>;
+  marks: {
+    centerAlign: ({ children }) => {
+      return <span style={{ margin: '0 auto' }}>{children}</span>;
+    },
+    rightAlign: ({ children }) => {
+      return <span style={{ marginLeft: 'auto' }}>{children}</span>;
+    },
+    normal: ({ children }) => {
+      return <p style={{ display: 'flex', width: '100%' }}>{children}</p>;
+    },
   },
 };
 
@@ -100,7 +104,7 @@ export default function BlogPage({ data }: BlogPageProps) {
         <BannerContainer></BannerContainer>
         <PortableText
           className="temp"
-          content={sanityPost._rawBody}
+          blocks={sanityPost._rawBody}
           serializers={serializers}
         />
       </BlogContainer>
