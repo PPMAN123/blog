@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Checkbox } from 'semantic-ui-react';
