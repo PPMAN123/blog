@@ -1,10 +1,12 @@
 import React from 'react';
-import { graphql } from 'gatsby';
+import { graphql, PageProps } from 'gatsby';
 import PortableText from 'react-portable-text';
 import styled from 'styled-components';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
+import { GatsbyImage, getImage, IGatsbyImageData } from 'gatsby-plugin-image';
 import Quote from '../components/StyledBlocks/Quote';
 import Section from '../components/StyledBlocks/Section';
+import { Serializer } from '../types/sanity';
+import { Post } from '../types/posts';
 
 const BlogContainer = styled.article`
   display: flex;
@@ -47,7 +49,7 @@ const Title = styled.h1`
   transform: translate(-50%, -100%);
 `;
 
-const serializers = {
+const serializers: Serializer = {
   blockQuote: ({ message, authorName }) => {
     return <Quote message={message} author={authorName} />;
   },
@@ -56,17 +58,15 @@ const serializers = {
       <Section
         leftChildren={
           <PortableText
+            className="temp"
             content={leftContent}
-            projectId={process.env.GATSBY_SANITY_PROJECT_ID}
-            dataset={process.env.GATSBY_SANITY_DATASET}
             serializers={serializers}
           />
         }
         rightChildren={
           <PortableText
+            className="temp"
             content={rightContent}
-            projectId={process.env.GATSBY_SANITY_PROJECT_ID}
-            dataset={process.env.GATSBY_SANITY_DATASET}
             serializers={serializers}
           />
         }
@@ -85,22 +85,22 @@ const serializers = {
   },
 };
 
-export default function BlogPage({ data }) {
+export type BlogPageProps = PageProps<{ sanityPost: Post }>;
+
+export default function BlogPage({ data }: BlogPageProps) {
   const { sanityPost } = data;
-  console.log(sanityPost);
-  const mainImage = getImage(sanityPost.mainImage.asset);
+  const mainImage = getImage(sanityPost.mainImage.asset) as IGatsbyImageData;
   return (
     <React.Fragment>
       <BlogContainer>
         <BannerImageContainer>
-          <GatsbyImage image={mainImage} />
+          <GatsbyImage image={mainImage} alt="" />
           <Title>{sanityPost.title}</Title>
         </BannerImageContainer>
         <BannerContainer></BannerContainer>
         <PortableText
+          className="temp"
           content={sanityPost._rawBody}
-          projectId={process.env.GATSBY_SANITY_PROJECT_ID}
-          dataset={process.env.GATSBY_SANITY_DATASET}
           serializers={serializers}
         />
       </BlogContainer>

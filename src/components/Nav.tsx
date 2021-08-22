@@ -40,10 +40,17 @@ const StyledBody = styled.main`
   flex-direction: column;
 `;
 
-const Nav = ({ children }) => {
-  const [visible, setVisible] = React.useState(false);
-  const [tick, setTick] = React.useState(false);
-  const handleMenuClick = (e, linkTO) => {
+export type NavProps = {
+  children: JSX.Element;
+};
+
+const Nav = ({ children }: NavProps) => {
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [tick, setTick] = React.useState<boolean>(false);
+  const handleMenuClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    linkTO: string
+  ) => {
     e.preventDefault();
     navigate(linkTO);
   };

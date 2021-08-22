@@ -1,7 +1,7 @@
 import path from 'path';
 
 const createBlogPages = async ({ graphql, actions }) => {
-  const blogTemplate = path.resolve('./src/template/BlogTemplate.js');
+  const blogTemplate = path.resolve('./src/template/BlogTemplate.tsx');
 
   const { data } = await graphql(`
     query {

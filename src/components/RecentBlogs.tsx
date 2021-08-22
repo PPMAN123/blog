@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Card } from 'semantic-ui-react';
 import { IoIosMore } from 'react-icons/io';
 import BlogPreview from './BlogPreview';
+import { Posts } from '../types/posts';
 
 const BlogPreviewContainer = styled.section`
   flex-direction: column;
@@ -33,61 +34,20 @@ const ViewMoreLink = styled(Link)`
   }
 `;
 
-const StyledLink = styled(Link)`
-  opacity: 0;
-  transition: opacity 0.1s ease-in;
-  border: 2px solid white;
-  background-color: rgba(200, 200, 200, 0.5);
-  color: black;
-  padding: 0.75rem 0.5rem;
-  text-transform: uppercase;
-  border-radius: 5px;
-  z-index: 1;
-  &:hover {
-    color: white;
-    background-color: rgba(150, 150, 150, 0.5);
-  }
-`;
-
-const StyledImage = styled.figure`
-  position: relative;
-  margin: 0;
-  background: url(${(p) => p.src});
-  min-height: 200px;
-  width: 100%;
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    &:before {
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    ${StyledLink} {
-      opacity: 1;
-    }
-  }
-
-  &:before {
-    left: 0;
-    top: 0;
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0);
-    transition: background-color 0.25s ease-in;
-  }
-`;
-
 const Title = styled.h2`
   font-size: 2rem;
   color: black;
   margin-bottom: 2rem;
 `;
 
+type StaticQueryData = {
+  allSanityPost: {
+    nodes: Posts;
+  };
+};
+
 const RecentBlogs = () => {
-  const { allSanityPost } = useStaticQuery(graphql`
+  const { allSanityPost }: StaticQueryData = useStaticQuery(graphql`
     query {
       allSanityPost(sort: { order: ASC, fields: _createdAt }, limit: 3) {
         nodes {

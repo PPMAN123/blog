@@ -1,6 +1,7 @@
 import React from 'react';
 import Nav from './Nav';
 import styled from 'styled-components';
+import { PageProps } from 'gatsby';
 
 const Container = styled.main`
   min-height: 100vh;
@@ -27,7 +28,7 @@ const Container = styled.main`
   }
 `;
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: PageProps) => {
   return (
     <>
       <Nav>

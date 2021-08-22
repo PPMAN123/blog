@@ -25,7 +25,12 @@ const AuthorName = styled.p`
   }
 `;
 
-const Quote = ({ message, author }) => {
+export type QuoteProps = {
+  message: string;
+  author: string;
+};
+
+const Quote = ({ message, author }: QuoteProps) => {
   return (
     <QuoteContainer>
       <QuoteText>{`"${message}"`}</QuoteText>
