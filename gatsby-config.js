@@ -7,6 +7,7 @@ module.exports = {
     title: 'blog',
   },
   plugins: [
+    'gatsby-plugin-image',
     {
       resolve: 'gatsby-source-sanity',
       options: {
@@ -18,6 +19,5 @@ module.exports = {
     },
     'gatsby-plugin-styled-components',
     'gatsby-plugin-react-helmet',
-    'gatsby-plugin-image',
   ],
 };

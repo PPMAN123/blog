@@ -59,16 +59,18 @@ const serializers: Serializer = {
         <Section
           leftChildren={
             <PortableText
-              className="temp"
               blocks={leftContent}
               serializers={serializers}
+              projectId={process.env.GATSBY_SANITY_PROJECT_ID}
+              dataset={process.env.GATSBY_SANITY_DATASET}
             />
           }
           rightChildren={
             <PortableText
-              className="temp"
               blocks={rightContent}
               serializers={serializers}
+              projectId={process.env.GATSBY_SANITY_PROJECT_ID}
+              dataset={process.env.GATSBY_SANITY_DATASET}
             />
           }
           type={type}
@@ -103,9 +105,10 @@ export default function BlogPage({ data }: BlogPageProps) {
         </BannerImageContainer>
         <BannerContainer></BannerContainer>
         <PortableText
-          className="temp"
           blocks={sanityPost._rawBody}
           serializers={serializers}
+          projectId={process.env.GATSBY_SANITY_PROJECT_ID}
+          dataset={process.env.GATSBY_SANITY_DATASET}
         />
       </BlogContainer>
     </React.Fragment>
