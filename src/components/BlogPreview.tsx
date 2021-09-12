@@ -65,9 +65,13 @@ const BlogPreview = ({ posts }: BlogPreviewProps) => {
     <React.Fragment>
       {posts.map((post: Post) => (
         <Card key={post.slug.current}>
-          <StyledImage src={post.mainImage.asset.url}>
+          {post.mainImage && post.mainImage ? (
+            <StyledImage src={post.mainImage.asset.url}>
+              <StyledLink to={`/${post.slug.current}/`}>Learn More</StyledLink>
+            </StyledImage>
+          ) : (
             <StyledLink to={`/${post.slug.current}/`}>Learn More</StyledLink>
-          </StyledImage>
+          )}
           <Card.Content>
             <Card.Header>
               <Link color="black" to={`/${post.slug.current}/`}>
@@ -75,7 +79,7 @@ const BlogPreview = ({ posts }: BlogPreviewProps) => {
               </Link>
             </Card.Header>
             <Card.Meta>
-              <Link to={`/blogs/?filters=${post.author.id}`}>
+              <Link to={`/${post.author.slug.current}`}>
                 {post.author.name}
               </Link>
             </Card.Meta>
@@ -89,7 +93,7 @@ const BlogPreview = ({ posts }: BlogPreviewProps) => {
                   size={'tiny'}
                   color={category.colour}
                   as={Link}
-                  to={`/blogs/?filters=${category.id}`}
+                  to={`/${category.slug.current}/`}
                 >
                   {category.title}
                 </Button>

@@ -9,9 +9,10 @@ import { AuthorId } from '../types/author';
 
 export type BlogListProps = {
   selectedFilters: Array<FilterId>;
+  title?: string;
 };
 
-const BlogList = ({ selectedFilters }: BlogListProps) => {
+const BlogList = ({ selectedFilters, title }: BlogListProps) => {
   const { allSanityPost } = useStaticQuery(graphql`
     query {
       allSanityPost(sort: { order: ASC, fields: _createdAt }) {
@@ -95,7 +96,7 @@ const BlogList = ({ selectedFilters }: BlogListProps) => {
   });
   return (
     <div>
-      <h1>Filtered Results</h1>
+      {title && <h1>{title}</h1>}
       <Card.Group itemsPerRow={3} stackable={true} style={{ width: '100%' }}>
         <BlogPreview posts={resultBlogSet} />
       </Card.Group>

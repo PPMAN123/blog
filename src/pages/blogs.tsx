@@ -59,7 +59,10 @@ const BlogsPage = ({ location }: PageProps) => {
           />
         </Grid.Column>
         <Grid.Column width={12}>
-          <BlogList selectedFilters={selectedFilters} />
+          <BlogList
+            selectedFilters={selectedFilters}
+            title="Filtered Results"
+          />
         </Grid.Column>
       </Grid>
     </Container>
