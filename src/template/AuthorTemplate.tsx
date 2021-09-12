@@ -81,7 +81,9 @@ const AuthorTemplate = ({ data }: AuthorTemplateProps) => {
     <PageWrapper>
       <Title>{allSanityPost.nodes[0].author.name}</Title>
       <AuthorBioWrapper>
-        <Image src={`${authorBioImage.asset.url}`} size="medium" circular />
+        {authorBioImage && (
+          <Image src={`${authorBioImage.asset.url}`} size="medium" circular />
+        )}
         <StyledBio>{fullAuthorBio}</StyledBio>
       </AuthorBioWrapper>
       <Divider />
