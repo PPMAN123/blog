@@ -95,15 +95,18 @@ export type BlogPageProps = PageProps<{ sanityPost: Post }>;
 
 export default function BlogPage({ data }: BlogPageProps) {
   const { sanityPost } = data;
-  const mainImage = getImage(sanityPost.mainImage.asset) as IGatsbyImageData;
+  let mainImage = null;
+  if (sanityPost.mainImage) {
+    mainImage = getImage(sanityPost.mainImage.asset) as IGatsbyImageData;
+  }
   return (
     <React.Fragment>
       <BlogContainer>
         <BannerImageContainer>
-          <GatsbyImage image={mainImage} alt="" />
+          {mainImage && <GatsbyImage image={mainImage} alt="" />}
           <Title>{sanityPost.title}</Title>
         </BannerImageContainer>
-        <BannerContainer></BannerContainer>
+        <BannerContainer />
         <PortableText
           blocks={sanityPost._rawBody}
           serializers={serializers}
