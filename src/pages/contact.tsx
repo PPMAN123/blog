@@ -54,18 +54,22 @@ const ContactPage = ({}: PageProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    // const recaptchaValue = recaptchaRef.current?.getValue();
-
-    fetch('/', {
+    const recaptchaValue = recaptchaRef.current?.getValue();
+    const formData = {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
         'form-name': form.getAttribute('name') || '',
-        'g-recaptcha': process.env.GATSBY_RECAPTCHA_KEY || '',
+        'g-recaptcha-response': recaptchaValue || '',
         ...state,
       }),
-    })
-      .then(() => console.log('form submitted'))
+    }
+
+    fetch('/', formData)
+      .then(() => {
+        alert("form submitted")
+        console.log(formData)
+      })
       .catch((error) => alert(error));
   };
   return (
@@ -73,11 +77,13 @@ const ContactPage = ({}: PageProps) => {
       <StyledForm
         name="contact"
         method="POST"
+        action="/"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
         data-netlify-recaptcha="true"
         onSubmit={handleSubmit}
       >
+        <script src={`https://www.google.com/recaptcha/api.js?render=${process.env.GATSBY_RECAPTCHA_KEY}`} async=""></script>
         <div
           className="g-recaptcha"
           data-sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
