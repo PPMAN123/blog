@@ -113,7 +113,7 @@ const CategoryTemplate = ({ data, pageContext }: CategoryTemplateProps) => {
 export default CategoryTemplate;
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     allSanityPost(
       filter: {
         categories: { elemMatch: { slug: { current: { eq: $slug } } } }

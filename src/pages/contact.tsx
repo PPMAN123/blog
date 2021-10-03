@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ReCAPTCHA from 'react-google-recaptcha';
+import Recaptcha from 'react-google-recaptcha';
 import { Button, Icon, Input, TextArea } from 'semantic-ui-react';
 import { PageProps } from 'gatsby';
 
@@ -29,6 +29,7 @@ const StyledInput = styled(Input)`
 
 const StyledTextArea = styled(TextArea)`
   width: 60vw;
+  resize: none;
 `;
 
 function encode(data: { [key: string]: string }) {
@@ -52,7 +53,7 @@ const ContactPage = ({}: PageProps) => {
     e.preventDefault();
     const form = e.currentTarget;
 
-    fetch('/', {
+    fetch('/contact/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
@@ -73,22 +74,23 @@ const ContactPage = ({}: PageProps) => {
         onSubmit={handleSubmit}
       >
         <Title>Contact Form</Title>
-        <input type="hidden" name="form-name" value="contact-form" />
+        <input type="hidden" name="form-name" value="contact form" />
         <StyledInput iconPosition="left" placeholder="Name">
           <Icon name="user" />
-          <input name="name" onChange={handleChange} />
+          <input name="name" onChange={handleChange} required />
         </StyledInput>
         <StyledInput iconPosition="left" placeholder="Email">
           <Icon name="at" />
-          <input name="email" onChange={handleChange} />
+          <input name="email" onChange={handleChange} required />
         </StyledInput>
         <StyledTextArea
           placeholder="Type your message here..."
           name="message"
           style={{ minHeight: 200 }}
           onChange={handleChange}
+          required
         />
-        <ReCAPTCHA sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`} />
+        <Recaptcha sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`} />
         <StyledButton type="submit">Submit</StyledButton>
       </StyledForm>
     </PageContainer>
