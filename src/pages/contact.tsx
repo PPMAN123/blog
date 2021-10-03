@@ -71,14 +71,14 @@ const ContactPage = ({}: PageProps) => {
   return (
     <PageContainer>
       <StyledForm
-        name="contact form"
+        name="contact"
         method="POST"
         data-netlify="true"
         data-netlify-recaptcha="true"
         onSubmit={handleSubmit}
       >
         <Title>Contact Form</Title>
-        <input type="hidden" name="form-name" value="contact form" />
+        <input type="hidden" name="form-name" value="contact" />
         <StyledInput iconPosition="left" placeholder="Name">
           <Icon name="user" />
           <input name="name" onChange={handleChange} required />
