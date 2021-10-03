@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Recaptcha, { ReCAPTCHA } from 'react-google-recaptcha';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { Button, Icon, Input, TextArea } from 'semantic-ui-react';
 import { PageProps } from 'gatsby';
 
@@ -106,7 +106,7 @@ const ContactPage = ({}: PageProps) => {
           onChange={handleChange}
           required
         />
-        <Recaptcha
+        <ReCAPTCHA
           ref={recaptchaRef}
           sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
           onChange={() => setButtonDisabled(false)}
