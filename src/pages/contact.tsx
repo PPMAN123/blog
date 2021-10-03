@@ -40,8 +40,8 @@ function encode(data: { [key: string]: string }) {
 
 const ContactPage = ({}: PageProps) => {
   const [state, setState] = React.useState({});
-  // const recaptchaRef = React.createRef<ReCAPTCHA>();
-  // const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  const recaptchaRef = React.createRef<ReCAPTCHA>();
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
   const handleChange = (
     e:
@@ -61,8 +61,7 @@ const ContactPage = ({}: PageProps) => {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
         'form-name': form.getAttribute('name') || '',
-        // 'g-recaptcha-response': recaptchaValue || '',
-        // 'g-recaptcha': process.env.GATSBY_RECAPTCHA_KEY || '',
+        'g-recaptcha': process.env.GATSBY_RECAPTCHA_KEY || '',
         ...state,
       }),
     })
@@ -75,11 +74,17 @@ const ContactPage = ({}: PageProps) => {
         name="contact"
         method="POST"
         data-netlify="true"
-        // data-netlify-recaptcha="true"
+        data-netlify-honeypot="bot-field"
+        data-netlify-recaptcha="true"
         onSubmit={handleSubmit}
       >
+        <div
+          className="g-recaptcha"
+          data-sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
+        ></div>
         <Title>Contact Form</Title>
         <input type="hidden" name="form-name" value="contact" />
+        <input type="hidden" name="bot-field" />
         <StyledInput iconPosition="left" placeholder="Name">
           <Icon name="user" />
           <input name="name" onChange={handleChange} required />
@@ -95,12 +100,12 @@ const ContactPage = ({}: PageProps) => {
           onChange={handleChange}
           required
         />
-        {/* <Recaptcha
+        <Recaptcha
           ref={recaptchaRef}
           sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
           onChange={() => setButtonDisabled(false)}
-        /> */}
-        <StyledButton type="submit" disabled={false}>
+        />
+        <StyledButton type="submit" disabled={buttonDisabled}>
           Submit
         </StyledButton>
       </StyledForm>
