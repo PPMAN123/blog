@@ -62,6 +62,7 @@ const ContactPage = ({}: PageProps) => {
       body: encode({
         'form-name': form.getAttribute('name') || '',
         'g-recaptcha-response': recaptchaValue || '',
+        'g-recaptcha': process.env.GATSBY_RECAPTCHA_KEY || '',
         ...state,
       }),
     })
