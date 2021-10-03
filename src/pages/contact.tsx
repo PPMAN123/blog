@@ -56,7 +56,7 @@ const ContactPage = ({}: PageProps) => {
     const form = e.currentTarget;
     const recaptchaValue = recaptchaRef.current?.getValue();
 
-    fetch('/contact/', {
+    fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
