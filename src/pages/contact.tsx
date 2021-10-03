@@ -63,12 +63,12 @@ const ContactPage = ({}: PageProps) => {
         'g-recaptcha-response': recaptchaValue || '',
         ...state,
       }),
-    }
+    };
 
     fetch('/', formData)
       .then(() => {
-        alert("form submitted")
-        console.log(formData)
+        alert('form submitted');
+        console.log(formData);
       })
       .catch((error) => alert(error));
   };
@@ -83,7 +83,9 @@ const ContactPage = ({}: PageProps) => {
         data-netlify-recaptcha="true"
         onSubmit={handleSubmit}
       >
-        <script src={`https://www.google.com/recaptcha/api.js?render=${process.env.GATSBY_RECAPTCHA_KEY}`} async=""></script>
+        <script
+          src={`https://www.google.com/recaptcha/api.js?render=${process.env.GATSBY_RECAPTCHA_KEY}`}
+        ></script>
         <div
           className="g-recaptcha"
           data-sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
