@@ -61,11 +61,12 @@ const ContactPage = ({}: PageProps) => {
       body: encode({
         'form-name': form.getAttribute('name') || '',
         'g-recaptcha-response': recaptchaValue || '',
+        'data-sitekey': process.env.GATSBY_RECAPTCHA_KEY || '',
         ...state,
       }),
     };
 
-    fetch('/', formData)
+    fetch('/?no-cache=1', formData)
       .then(() => {
         alert('form submitted');
         console.log(formData);
@@ -77,19 +78,11 @@ const ContactPage = ({}: PageProps) => {
       <StyledForm
         name="contact"
         method="POST"
-        action="/"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
         data-netlify-recaptcha="true"
         onSubmit={handleSubmit}
       >
-        <script
-          src={`https://www.google.com/recaptcha/api.js?render=${process.env.GATSBY_RECAPTCHA_KEY}`}
-        ></script>
-        <div
-          className="g-recaptcha"
-          data-sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
-        ></div>
         <Title>Contact Form</Title>
         <input type="hidden" name="form-name" value="contact" />
         <input type="hidden" name="bot-field" />
