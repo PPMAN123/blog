@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import ReCAPTCHA from 'react-google-recaptcha';
 import { Button, Icon, Input, TextArea } from 'semantic-ui-react';
 import { PageProps } from 'gatsby';
 
@@ -40,8 +39,6 @@ function encode(data: { [key: string]: string }) {
 
 const ContactPage = ({}: PageProps) => {
   const [state, setState] = React.useState({});
-  const recaptchaRef = React.createRef<ReCAPTCHA>();
-  const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
   const handleChange = (
     e:
@@ -54,14 +51,11 @@ const ContactPage = ({}: PageProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const recaptchaValue = recaptchaRef.current?.getValue();
     const formData = {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
         'form-name': form.getAttribute('name') || '',
-        'g-recaptcha-response': recaptchaValue || '',
-        'data-sitekey': process.env.GATSBY_RECAPTCHA_KEY || '',
         ...state,
       }),
     };
@@ -80,7 +74,6 @@ const ContactPage = ({}: PageProps) => {
         method="POST"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
-        data-netlify-recaptcha="true"
         onSubmit={handleSubmit}
       >
         <Title>Contact Form</Title>
@@ -101,14 +94,7 @@ const ContactPage = ({}: PageProps) => {
           onChange={handleChange}
           required
         />
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          sitekey={`${process.env.GATSBY_RECAPTCHA_KEY}`}
-          onChange={() => setButtonDisabled(false)}
-        />
-        <StyledButton type="submit" disabled={buttonDisabled}>
-          Submit
-        </StyledButton>
+        <StyledButton type="submit">Submit</StyledButton>
       </StyledForm>
     </PageContainer>
   );
