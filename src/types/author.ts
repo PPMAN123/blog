@@ -1,6 +1,6 @@
 import type { SanityImage } from './image';
 
-export type AuthorId = String;
+export type AuthorId = string;
 
 export type Author = {
   id: AuthorId;

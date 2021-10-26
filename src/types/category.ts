@@ -1,7 +1,7 @@
 import { SemanticCOLORS } from 'semantic-ui-react';
 import { Slug } from './Slug';
 
-export type CategoryId = String;
+export type CategoryId = string;
 
 export type Category = {
   id: CategoryId;

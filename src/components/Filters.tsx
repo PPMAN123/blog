@@ -38,25 +38,23 @@ type StaticQueryData = {
 };
 
 const Filters = ({ toggleSelection, getFilterState }: FiltersProps) => {
-  const {
-    allSanityAuthor,
-    allSanityCategory,
-  }: StaticQueryData = useStaticQuery(graphql`
-    query {
-      allSanityAuthor {
-        nodes {
-          name
-          id
+  const { allSanityAuthor, allSanityCategory }: StaticQueryData =
+    useStaticQuery(graphql`
+      query {
+        allSanityAuthor {
+          nodes {
+            name
+            id
+          }
+        }
+        allSanityCategory {
+          nodes {
+            title
+            id
+          }
         }
       }
-      allSanityCategory {
-        nodes {
-          title
-          id
-        }
-      }
-    }
-  `);
+    `);
 
   return (
     <Container>

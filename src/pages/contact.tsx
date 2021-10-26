@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Input, TextArea } from 'semantic-ui-react';
 import { PageProps } from 'gatsby';
+import Notification, { NotificationType } from '../components/Notification';
 
 const PageContainer = styled.div``;
 
@@ -39,6 +40,7 @@ function encode(data: { [key: string]: string }) {
 
 const ContactPage = ({}: PageProps) => {
   const [state, setState] = React.useState({});
+  const [formSuccess, setFormSuccess] = React.useState(false);
 
   const handleChange = (
     e:
@@ -62,8 +64,7 @@ const ContactPage = ({}: PageProps) => {
 
     fetch('/?no-cache=1', formData)
       .then(() => {
-        alert('form submitted');
-        console.log(formData);
+        setFormSuccess(true);
       })
       .catch((error) => alert(error));
   };
@@ -94,6 +95,12 @@ const ContactPage = ({}: PageProps) => {
           onChange={handleChange}
           required
         />
+        {formSuccess && (
+          <Notification
+            message="form submitted"
+            type={NotificationType.POSITIVE}
+          />
+        )}
         <StyledButton type="submit">Submit</StyledButton>
       </StyledForm>
     </PageContainer>
