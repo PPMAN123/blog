@@ -9,6 +9,7 @@ import { useNotificationContext } from '../context/NotificationContext';
 import { NotificationType } from '../components/Notification';
 import { useFiltersContext } from '../context/FiltersContext';
 import { usePrevious } from '../hooks/usePrevious';
+import _ from 'lodash';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -21,19 +22,39 @@ const BlogsPage = ({ location }: PageProps) => {
   const selectedFilters: FilterIds = urlParse.get('filters')?.split(',') || [];
   const { triggerNewNotification } = useNotificationContext();
   const { getFilterDetails } = useFiltersContext();
+  const prevSelectedFilters = usePrevious(selectedFilters);
 
   //dictionary with all the details of each id
   const dictionary = getFilterDetails();
-  console.log(dictionary);
+
   const updateURL = (filters: FilterIds) => {
     navigate(
       `?filters=${filters.filter((filter: FilterId) => filter != '').join(',')}`
     );
-    triggerNewNotification({
-      message: 'skdljfaslkd',
-      type: NotificationType.POSITIVE,
-    });
   };
+
+  React.useEffect(() => {
+    selectedFilters.forEach((filter) => {
+      if (!prevSelectedFilters?.includes(filter) && filter !== '') {
+        triggerNewNotification({
+          message: `You added a ${dictionary[filter].type} called ${dictionary[filter].name}`,
+          type: NotificationType.POSITIVE,
+          id: _.uniqueId('NotificationId'),
+        });
+      }
+    });
+    if (prevSelectedFilters) {
+      prevSelectedFilters.forEach((filter) => {
+        if (!selectedFilters?.includes(filter) && filter !== '') {
+          triggerNewNotification({
+            message: `You deleted a ${dictionary[filter].type} called ${dictionary[filter].name}`,
+            type: NotificationType.NEGATIVE,
+            id: _.uniqueId('NotificationId'),
+          });
+        }
+      });
+    }
+  }, [selectedFilters]);
 
   const toggleSelections = (id: FilterId, state: boolean | null = null) => {
     if (state === null) {

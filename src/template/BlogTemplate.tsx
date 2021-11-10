@@ -119,7 +119,7 @@ export default function BlogPage({ data }: BlogPageProps) {
 }
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     sanityPost(slug: { current: { eq: $slug } }) {
       title
       _rawBody

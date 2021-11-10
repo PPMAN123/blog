@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useStaticQuery, graphql } from 'gatsby';
 import { Checkbox } from 'semantic-ui-react';
 import { FilterId } from '../types/filter';
-import { Authors } from '../types/author';
-import { Categories } from '../types/category';
+import { useFiltersContext } from '../context/FiltersContext';
 
 const Container = styled.aside`
   display: flex;
@@ -28,55 +26,39 @@ export type FiltersProps = {
   getFilterState: (id: FilterId) => boolean;
 };
 
-type StaticQueryData = {
-  allSanityAuthor: {
-    nodes: Authors;
-  };
-  allSanityCategory: {
-    nodes: Categories;
-  };
-};
-
 const Filters = ({ toggleSelection, getFilterState }: FiltersProps) => {
-  const { allSanityAuthor, allSanityCategory }: StaticQueryData =
-    useStaticQuery(graphql`
-      query {
-        allSanityAuthor {
-          nodes {
-            name
-            id
-          }
-        }
-        allSanityCategory {
-          nodes {
-            title
-            id
-          }
-        }
-      }
-    `);
+  const { getFilterDetails } = useFiltersContext();
+  const dictionary = getFilterDetails();
 
   return (
     <Container>
       <FilterTypeHeader>Categories</FilterTypeHeader>
       <FilterContent>
-        {allSanityCategory.nodes.map((category) => (
-          <Checkbox
-            label={category.title}
-            checked={getFilterState(category.id)}
-            onChange={() => toggleSelection(category.id)}
-          />
-        ))}
+        {Object.keys(dictionary).map((key: FilterId) => {
+          if (dictionary[key].type === 'category') {
+            return (
+              <Checkbox
+                label={dictionary[key].name}
+                checked={getFilterState(key)}
+                onChange={() => toggleSelection(key)}
+              />
+            );
+          }
+        })}
       </FilterContent>
       <FilterTypeHeader>Authors</FilterTypeHeader>
       <FilterContent>
-        {allSanityAuthor.nodes.map((author) => (
-          <Checkbox
-            label={author.name}
-            checked={getFilterState(author.id)}
-            onChange={() => toggleSelection(author.id)}
-          />
-        ))}
+        {Object.keys(dictionary).map((key) => {
+          if (dictionary[key].type === 'author') {
+            return (
+              <Checkbox
+                label={dictionary[key].name}
+                checked={getFilterState(key)}
+                onChange={() => toggleSelection(key)}
+              />
+            );
+          }
+        })}
       </FilterContent>
     </Container>
   );

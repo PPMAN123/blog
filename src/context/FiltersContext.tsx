@@ -55,17 +55,15 @@ const FiltersProvider: React.FC = ({ children }) => {
     const authors = allSanityAuthor.nodes.reduce((acc, author) => {
       acc[author.id] = {
         name: author.name,
-        type: 'Author',
+        type: 'author',
       };
       return acc;
     }, {} as FilterDetails);
 
-    console.log(authors);
-
     const categories = allSanityCategory.nodes.reduce((acc, category) => {
       acc[category.id] = {
         name: category.title,
-        type: 'Category',
+        type: 'category',
       };
       return acc;
     }, {} as FilterDetails);

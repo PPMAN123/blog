@@ -17,7 +17,7 @@ export type NotificationCenterProps = {
 };
 
 const NotificationCenter = (props: NotificationCenterProps) => {
-  const { removeEarliestNotification } = useNotificationContext();
+  const { removeNotificationWithId } = useNotificationContext();
   const previousNotifications = usePrevious(props.notifications);
 
   React.useEffect(() => {
@@ -28,8 +28,10 @@ const NotificationCenter = (props: NotificationCenterProps) => {
       props.notifications.length > previousNotifications?.length
     ) {
       setTimeout(() => {
-        removeEarliestNotification();
-      }, 3000);
+        removeNotificationWithId(
+          props.notifications[props.notifications.length - 1].id
+        );
+      }, 5000);
     }
   }, [props.notifications]);
 
