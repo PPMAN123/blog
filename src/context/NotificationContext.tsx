@@ -7,18 +7,58 @@ export type NotificationContextValues = {
   triggerNewNotification: (notificationProps: NotificationsProps) => void;
   removeEarliestNotification: () => void;
   removeNotificationWithId: (id: string) => void;
+  addTimeOutStatus: (notificationId: string) => void;
+  notificationTimeoutStatus: { [notificationId: string]: NodeJS.Timeout };
+  removeTimeOutStatus: (
+    notificationId: string,
+    timeoutId: NodeJS.Timeout
+  ) => void;
 };
 
 const NotificationContext = React.createContext<NotificationContextValues>({
   triggerNewNotification: () => {},
   removeEarliestNotification: () => {},
   removeNotificationWithId: () => {},
+  addTimeOutStatus: () => {},
+  notificationTimeoutStatus: {},
+  removeTimeOutStatus: () => {},
 });
 
 const NotificationProvider: React.FC = ({ children }) => {
   const [notifications, setNotifications] = React.useState<
     Array<NotificationsProps>
   >([]);
+
+  const [notificationTimeoutStatus, setNotificationTimeoutStatus] =
+    React.useState<{ [notificationId: string]: NodeJS.Timeout }>({});
+
+  const addTimeOutStatus = (notificationId: string) => {
+    const timeOut = setTimeout(() => {
+      removeNotificationWithId(notificationId);
+      removeTimeOutStatus(notificationId);
+    }, 2600);
+    console.log(notificationId, 'adding timeout', timeOut);
+
+    setNotificationTimeoutStatus((prevNotificationTimeoutStatus) => ({
+      ...prevNotificationTimeoutStatus,
+      [notificationId]: timeOut,
+    }));
+  };
+
+  const removeTimeOutStatus = (
+    notificationId: string,
+    timeoutId?: NodeJS.Timeout
+  ) => {
+    setNotificationTimeoutStatus((prevNotificationTimeoutStatus) => {
+      const { [notificationId]: _, ...remainingTimeoutStatuses } =
+        prevNotificationTimeoutStatus;
+      return remainingTimeoutStatuses;
+    });
+    if (timeoutId) {
+      console.log(timeoutId);
+      clearTimeout(timeoutId);
+    }
+  };
 
   const triggerNewNotification = (notificationProps: NotificationsProps) => {
     setNotifications((prevNotifications) => [
@@ -49,6 +89,9 @@ const NotificationProvider: React.FC = ({ children }) => {
         triggerNewNotification,
         removeEarliestNotification,
         removeNotificationWithId,
+        addTimeOutStatus,
+        notificationTimeoutStatus,
+        removeTimeOutStatus,
       }}
     >
       {children}
@@ -58,16 +101,7 @@ const NotificationProvider: React.FC = ({ children }) => {
 };
 
 const useNotificationContext = () => {
-  const {
-    triggerNewNotification,
-    removeEarliestNotification,
-    removeNotificationWithId,
-  } = React.useContext(NotificationContext);
-  return {
-    triggerNewNotification,
-    removeEarliestNotification,
-    removeNotificationWithId,
-  };
+  return React.useContext(NotificationContext);
 };
 
 export { NotificationProvider, useNotificationContext };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Message } from 'semantic-ui-react';
+import { Message, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { useNotificationContext } from '../context/NotificationContext';
 
@@ -30,7 +30,27 @@ const NotificationButton = styled.button`
   border: none;
 `;
 
-const NotificationContainer = styled.div`
+const NotificationContainer = styled.div<{ hover: boolean }>`
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-200px);
+      opacity: 0.2;
+    }
+    100% {
+      transform: traslateX(0px);
+      opacity: 1;
+    }
+  }
+  @keyframes slideOut {
+    0% {
+      transform: translateX(0px);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-200px);
+      opacity: 0.2;
+    }
+  }
   position: relative;
   &:hover {
     &:before {
@@ -50,10 +70,25 @@ const NotificationContainer = styled.div`
     background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.1s ease-in;
   }
+  animation: slideIn 0.6s ease-out forwards${(p) =>
+    p.hover ? ';' : ', slideOut 0.6s ease-in forwards;'}
+  animation-delay: 0s${(p) => (p.hover ? ';' : ', 2s;')}
+`;
+
+const StyledIcon = styled(Icon)`
+  && {
+    margin-right: 0;
+  }
 `;
 
 const Notification = ({ message, type, id }: NotificationsProps) => {
-  const { removeNotificationWithId } = useNotificationContext();
+  const {
+    removeNotificationWithId,
+    removeTimeOutStatus,
+    notificationTimeoutStatus,
+    addTimeOutStatus,
+  } = useNotificationContext();
+  const [hover, setHover] = React.useState(false);
   let messageProps = {};
   switch (type) {
     case NotificationType.POSITIVE:
@@ -66,13 +101,29 @@ const Notification = ({ message, type, id }: NotificationsProps) => {
       messageProps = { warning: true };
       break;
   }
+
+  React.useEffect(() => {
+    console.log(hover, notificationTimeoutStatus[id]);
+    if (hover) {
+      removeTimeOutStatus(id, notificationTimeoutStatus[id]);
+    } else {
+      if (!notificationTimeoutStatus[id]) {
+        addTimeOutStatus(id);
+      }
+    }
+  }, [hover]);
+
   return (
-    <NotificationContainer>
+    <NotificationContainer
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      hover={hover}
+    >
       <Message {...messageProps}>
         <Message.Header>{message}</Message.Header>
       </Message>
       <NotificationButton onClick={() => removeNotificationWithId(id)}>
-        <Icon name="times" />
+        <StyledIcon name="times" />
       </NotificationButton>
     </NotificationContainer>
   );
