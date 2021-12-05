@@ -30,7 +30,10 @@ const NotificationButton = styled.button`
   border: none;
 `;
 
-const NotificationContainer = styled.div<{ hover: boolean }>`
+const NotificationContainer = styled.div<{
+  hover: boolean;
+  triggerSlideOut: boolean;
+}>`
   @keyframes slideIn {
     0% {
       transform: translateX(-200px);
@@ -48,7 +51,7 @@ const NotificationContainer = styled.div<{ hover: boolean }>`
     }
     100% {
       transform: translateX(-200px);
-      opacity: 0.2;
+      opacity: 0;
     }
   }
   position: relative;
@@ -73,6 +76,10 @@ const NotificationContainer = styled.div<{ hover: boolean }>`
   animation: slideIn 0.6s ease-out forwards${(p) =>
     p.hover ? ';' : ', slideOut 0.6s ease-in forwards;'}
   animation-delay: 0s${(p) => (p.hover ? ';' : ', 2s;')}
+  transition: left 0.2s linear;
+  ${(p) => (p.hover ? 'left: 50px;' : 'left: 0px;')}
+  ${(p) =>
+    p.triggerSlideOut ? 'animation: slideOut 0.6s ease-in forwards;' : ''}
 `;
 
 const StyledIcon = styled(Icon)`
@@ -87,6 +94,7 @@ const Notification = ({ message, type, id }: NotificationsProps) => {
     removeTimeOutStatus,
     notificationTimeoutStatus,
     addTimeOutStatus,
+    notificationExitStatus,
   } = useNotificationContext();
   const [hover, setHover] = React.useState(false);
   let messageProps = {};
@@ -118,6 +126,7 @@ const Notification = ({ message, type, id }: NotificationsProps) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       hover={hover}
+      triggerSlideOut={notificationExitStatus[id]}
     >
       <Message {...messageProps}>
         <Message.Header>{message}</Message.Header>

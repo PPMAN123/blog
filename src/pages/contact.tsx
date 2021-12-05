@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Input, TextArea } from 'semantic-ui-react';
 import { PageProps } from 'gatsby';
-import Notification, { NotificationType } from '../components/Notification';
+import _ from 'lodash';
+import { useNotificationContext } from '../context/NotificationContext';
+import { NotificationType } from '../components/Notification';
 
 const PageContainer = styled.div``;
 
@@ -32,7 +34,7 @@ const StyledTextArea = styled(TextArea)`
   resize: none;
 `;
 
-function encode(data: { [key: string]: string }) {
+export function encode(data: { [key: string]: string }) {
   return Object.keys(data)
     .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
     .join('&');
@@ -41,7 +43,7 @@ function encode(data: { [key: string]: string }) {
 const ContactPage = ({}: PageProps) => {
   const [state, setState] = React.useState({});
   const [formSuccess, setFormSuccess] = React.useState(false);
-
+  const { triggerNewNotification } = useNotificationContext();
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -68,6 +70,17 @@ const ContactPage = ({}: PageProps) => {
       })
       .catch((error) => alert(error));
   };
+
+  React.useEffect(() => {
+    if (formSuccess) {
+      triggerNewNotification({
+        message: 'form submitted',
+        type: NotificationType.POSITIVE,
+        id: _.uniqueId('NotificationId'),
+      });
+    }
+  }, [formSuccess]);
+
   return (
     <PageContainer>
       <StyledForm
@@ -95,12 +108,6 @@ const ContactPage = ({}: PageProps) => {
           onChange={handleChange}
           required
         />
-        {formSuccess && (
-          <Notification
-            message="form submitted"
-            type={NotificationType.POSITIVE}
-          />
-        )}
         <StyledButton type="submit">Submit</StyledButton>
       </StyledForm>
     </PageContainer>

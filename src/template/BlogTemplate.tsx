@@ -7,6 +7,7 @@ import Quote from '../components/StyledBlocks/Quote';
 import Section from '../components/StyledBlocks/Section';
 import { Serializer } from '../types/sanity';
 import { Post } from '../types/posts';
+import { encode } from '../pages/contact';
 
 const BlogContainer = styled.article`
   display: flex;
@@ -93,7 +94,7 @@ const serializers: Serializer = {
 
 export type BlogPageProps = PageProps<{ sanityPost: Post }>;
 
-export default function BlogPage({ data }: BlogPageProps) {
+export default function BlogPage({ data, location }: BlogPageProps) {
   const { sanityPost } = data;
   let mainImage = null;
   if (sanityPost.mainImage) {
@@ -107,6 +108,18 @@ export default function BlogPage({ data }: BlogPageProps) {
           <Title>{sanityPost.title}</Title>
         </BannerImageContainer>
         <BannerContainer />
+        <a
+          className="twitter-share-button"
+          href={`https://twitter.com/intent/tweet?${encode({
+            text: 'best blog in the world for sure trust me',
+            url: location.href,
+          })}`}
+          data-size="large"
+          data-hastags="blessed,antivaxx"
+          data-via="POTUS"
+        >
+          Tweet
+        </a>
         <PortableText
           blocks={sanityPost._rawBody}
           serializers={serializers}

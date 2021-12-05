@@ -7,8 +7,6 @@ const NotificationContainer = styled.section`
   left: 10px;
   bottom: 10px;
   width: 300px;
-  max-height: 80vh;
-  overflow: hidden;
 `;
 
 export type NotificationCenterProps = {
@@ -18,7 +16,7 @@ export type NotificationCenterProps = {
 const NotificationCenter = (props: NotificationCenterProps) => {
   return (
     <NotificationContainer>
-      {props.notifications.map((notificationProps) => (
+      {props.notifications.slice(0, 10).map((notificationProps) => (
         <Notification key={notificationProps.id} {...notificationProps} />
       ))}
     </NotificationContainer>

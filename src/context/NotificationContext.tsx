@@ -13,6 +13,7 @@ export type NotificationContextValues = {
     notificationId: string,
     timeoutId: NodeJS.Timeout
   ) => void;
+  notificationExitStatus: { [notificationId: string]: boolean };
 };
 
 const NotificationContext = React.createContext<NotificationContextValues>({
@@ -22,6 +23,7 @@ const NotificationContext = React.createContext<NotificationContextValues>({
   addTimeOutStatus: () => {},
   notificationTimeoutStatus: {},
   removeTimeOutStatus: () => {},
+  notificationExitStatus: {},
 });
 
 const NotificationProvider: React.FC = ({ children }) => {
@@ -32,11 +34,15 @@ const NotificationProvider: React.FC = ({ children }) => {
   const [notificationTimeoutStatus, setNotificationTimeoutStatus] =
     React.useState<{ [notificationId: string]: NodeJS.Timeout }>({});
 
+  const [notificationExitStatus, setNotificationExitStatus] = React.useState<{
+    [notificationId: string]: boolean;
+  }>({});
+
   const addTimeOutStatus = (notificationId: string) => {
     const timeOut = setTimeout(() => {
       removeNotificationWithId(notificationId);
       removeTimeOutStatus(notificationId);
-    }, 2600);
+    }, 2500);
     console.log(notificationId, 'adding timeout', timeOut);
 
     setNotificationTimeoutStatus((prevNotificationTimeoutStatus) => ({
@@ -55,7 +61,6 @@ const NotificationProvider: React.FC = ({ children }) => {
       return remainingTimeoutStatuses;
     });
     if (timeoutId) {
-      console.log(timeoutId);
       clearTimeout(timeoutId);
     }
   };
@@ -78,9 +83,17 @@ const NotificationProvider: React.FC = ({ children }) => {
   };
 
   const removeNotificationWithId = (id: string) => {
-    setNotifications((prevNotifications) => {
-      return prevNotifications.filter((notification) => notification.id != id);
-    });
+    setNotificationExitStatus((prevNotificationExitStatus) => ({
+      ...prevNotificationExitStatus,
+      [id]: true,
+    }));
+    setTimeout(() => {
+      setNotifications((prevNotifications) => {
+        return prevNotifications.filter(
+          (notification) => notification.id != id
+        );
+      });
+    }, 600);
   };
 
   return (
@@ -92,6 +105,7 @@ const NotificationProvider: React.FC = ({ children }) => {
         addTimeOutStatus,
         notificationTimeoutStatus,
         removeTimeOutStatus,
+        notificationExitStatus,
       }}
     >
       {children}
