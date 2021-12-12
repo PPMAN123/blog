@@ -12,6 +12,7 @@ export type Serializer = {
   types: {
     blockQuote: BlockQuoteSerializer;
     section: SectionSerializer;
+    codeBlock: CodeBlockSerializer;
   };
   marks: {
     centerAlign: TextWrapperSerializer;
@@ -35,9 +36,18 @@ export type Section = {
   };
 };
 
+export type CodeBlock = {
+  node: {
+    code: string
+    language: string
+  }
+}
+
 export type BlockQuoteSerializer = (object: BlockQuote) => JSX.Element;
 
 export type SectionSerializer = (object: Section) => JSX.Element;
+
+export type CodeBlockSerializer = (Object: CodeBlock) => JSX.Element
 
 export type TextWrapperSerializer = (object: {
   children: JSX.Element;

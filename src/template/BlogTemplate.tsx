@@ -7,7 +7,10 @@ import Quote from '../components/StyledBlocks/Quote';
 import Section from '../components/StyledBlocks/Section';
 import { Serializer } from '../types/sanity';
 import { Post } from '../types/posts';
-import { encode } from '../pages/contact';
+import ShareButtons from '../components/ShareButtons';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import CodeBlockText from '../components/CodeBlockText';
 
 const BlogContainer = styled.article`
   display: flex;
@@ -54,6 +57,19 @@ const serializers: Serializer = {
   types: {
     blockQuote: ({ node: { message, authorName } }) => {
       return <Quote message={message} author={authorName} />;
+    },
+    codeBlock: ({node: {code, language}}) => {
+      const languageMapping: {[key: string]: string} = {
+        JS: 'javascript',
+        Python: 'python',
+        HTML: 'html',
+        CSS: 'css',
+        'C++': 'cpp',
+        Typescript: 'typescript'
+      }
+      return <SyntaxHighlighter language={languageMapping[language]} displayLanguage={language} style={atomDark} showLineNumbers PreTag={CodeBlockText}>
+        {code}
+      </SyntaxHighlighter>
     },
     section: ({ node: { leftContent, rightContent, type } }) => {
       return (
@@ -108,18 +124,7 @@ export default function BlogPage({ data, location }: BlogPageProps) {
           <Title>{sanityPost.title}</Title>
         </BannerImageContainer>
         <BannerContainer />
-        <a
-          className="twitter-share-button"
-          href={`https://twitter.com/intent/tweet?${encode({
-            text: 'best blog in the world for sure trust me',
-            url: location.href,
-          })}`}
-          data-size="large"
-          data-hastags="blessed,antivaxx"
-          data-via="POTUS"
-        >
-          Tweet
-        </a>
+        <ShareButtons link={location.href} message={sanityPost.title}/>
         <PortableText
           blocks={sanityPost._rawBody}
           serializers={serializers}
