@@ -8,7 +8,7 @@ import Section from '../components/StyledBlocks/Section';
 import { Serializer } from '../types/sanity';
 import { Post } from '../types/posts';
 import ShareButtons from '../components/ShareButtons';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { Prism as SyntaxHighlighter, createElement } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import CodeBlockText from '../components/CodeBlockText';
 
@@ -53,6 +53,29 @@ const Title = styled.h1`
   transform: translate(-50%, -100%);
 `;
 
+function defaultRenderer({ rows, stylesheet, useInlineStyles }) {
+  return rows.map((node, i) => {
+    const newNode = Object.assign({}, node)
+    const [lineNumberNode, ...codeNodes] = newNode.children
+
+    const updatedNode = {
+      type: 'element',
+      tagName: 'span',
+      properties: {className: [`row-${i+1}`]},
+      children: codeNodes
+    }
+    
+    newNode.children = [lineNumberNode, updatedNode]
+    return createElement({
+      node: newNode,
+      stylesheet,
+      useInlineStyles,
+      key: `code-segement${i}`
+    })
+  }
+  );
+}
+
 const serializers: Serializer = {
   types: {
     blockQuote: ({ node: { message, authorName } }) => {
@@ -67,7 +90,7 @@ const serializers: Serializer = {
         'C++': 'cpp',
         Typescript: 'typescript'
       }
-      return <SyntaxHighlighter language={languageMapping[language]} displayLanguage={language} style={atomDark} showLineNumbers PreTag={CodeBlockText}>
+      return <SyntaxHighlighter renderer={defaultRenderer} language={languageMapping[language]} displayLanguage={language} style={atomDark} showLineNumbers PreTag={CodeBlockText}>
         {code}
       </SyntaxHighlighter>
     },
