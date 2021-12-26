@@ -40,6 +40,7 @@ export type CodeBlock = {
   node: {
     code: string
     language: string
+    title: string
   }
 }
 

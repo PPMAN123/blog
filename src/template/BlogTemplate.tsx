@@ -11,6 +11,7 @@ import ShareButtons from '../components/ShareButtons';
 import { Prism as SyntaxHighlighter, createElement } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import CodeBlockText from '../components/CodeBlockText';
+import type { WindowLocation } from 'reach__router'
 
 const BlogContainer = styled.article`
   display: flex;
@@ -56,12 +57,13 @@ const Title = styled.h1`
 function defaultRenderer({ rows, stylesheet, useInlineStyles }) {
   return rows.map((node, i) => {
     const newNode = Object.assign({}, node)
+    newNode.properties.className = ['line-wrapper']
     const [lineNumberNode, ...codeNodes] = newNode.children
 
     const updatedNode = {
       type: 'element',
       tagName: 'span',
-      properties: {className: [`row-${i+1}`]},
+      properties: {className: ['code-line', `row-${i+1}`]},
       children: codeNodes
     }
     
@@ -76,60 +78,65 @@ function defaultRenderer({ rows, stylesheet, useInlineStyles }) {
   );
 }
 
-const serializers: Serializer = {
-  types: {
-    blockQuote: ({ node: { message, authorName } }) => {
-      return <Quote message={message} author={authorName} />;
+const generateSerializerWith = ({ location }: { location: WindowLocation<unknown>}) => {
+  const serializers: Serializer = {
+    types: {
+      blockQuote: ({ node: { message, authorName } }) => {
+        return <Quote message={message} author={authorName} />;
+      },
+      codeBlock: ({node: {code, language, title}}) => {
+        const languageMapping: {[key: string]: string} = {
+          JS: 'javascript',
+          Python: 'python',
+          HTML: 'html',
+          CSS: 'css',
+          'C++': 'cpp',
+          Typescript: 'typescript'
+        }
+        return <SyntaxHighlighter renderer={defaultRenderer} language={languageMapping[language]} displayLanguage={language} style={atomDark} showLineNumbers location={location} title={title} PreTag={CodeBlockText}>
+          {code}
+        </SyntaxHighlighter>
+      },
+      section: ({ node: { leftContent, rightContent, type } }) => {
+        return (
+          <Section
+            leftChildren={
+              <PortableText
+                blocks={leftContent}
+                serializers={serializers}
+                projectId={process.env.GATSBY_SANITY_PROJECT_ID}
+                dataset={process.env.GATSBY_SANITY_DATASET}
+              />
+            }
+            rightChildren={
+              <PortableText
+                blocks={rightContent}
+                serializers={serializers}
+                projectId={process.env.GATSBY_SANITY_PROJECT_ID}
+                dataset={process.env.GATSBY_SANITY_DATASET}
+              />
+            }
+            type={type}
+          />
+        );
+      },
     },
-    codeBlock: ({node: {code, language}}) => {
-      const languageMapping: {[key: string]: string} = {
-        JS: 'javascript',
-        Python: 'python',
-        HTML: 'html',
-        CSS: 'css',
-        'C++': 'cpp',
-        Typescript: 'typescript'
-      }
-      return <SyntaxHighlighter renderer={defaultRenderer} language={languageMapping[language]} displayLanguage={language} style={atomDark} showLineNumbers PreTag={CodeBlockText}>
-        {code}
-      </SyntaxHighlighter>
+    marks: {
+      centerAlign: ({ children }) => {
+        return <span style={{ margin: '0 auto' }}>{children}</span>;
+      },
+      rightAlign: ({ children }) => {
+        return <span style={{ marginLeft: 'auto' }}>{children}</span>;
+      },
+      normal: ({ children }) => {
+        return <p style={{ display: 'flex', width: '100%' }}>{children}</p>;
+      },
     },
-    section: ({ node: { leftContent, rightContent, type } }) => {
-      return (
-        <Section
-          leftChildren={
-            <PortableText
-              blocks={leftContent}
-              serializers={serializers}
-              projectId={process.env.GATSBY_SANITY_PROJECT_ID}
-              dataset={process.env.GATSBY_SANITY_DATASET}
-            />
-          }
-          rightChildren={
-            <PortableText
-              blocks={rightContent}
-              serializers={serializers}
-              projectId={process.env.GATSBY_SANITY_PROJECT_ID}
-              dataset={process.env.GATSBY_SANITY_DATASET}
-            />
-          }
-          type={type}
-        />
-      );
-    },
-  },
-  marks: {
-    centerAlign: ({ children }) => {
-      return <span style={{ margin: '0 auto' }}>{children}</span>;
-    },
-    rightAlign: ({ children }) => {
-      return <span style={{ marginLeft: 'auto' }}>{children}</span>;
-    },
-    normal: ({ children }) => {
-      return <p style={{ display: 'flex', width: '100%' }}>{children}</p>;
-    },
-  },
-};
+  };
+  return serializers;
+}
+
+
 
 export type BlogPageProps = PageProps<{ sanityPost: Post }>;
 
@@ -150,7 +157,7 @@ export default function BlogPage({ data, location }: BlogPageProps) {
         <ShareButtons link={location.href} message={sanityPost.title}/>
         <PortableText
           blocks={sanityPost._rawBody}
-          serializers={serializers}
+          serializers={generateSerializerWith({ location })}
           projectId={process.env.GATSBY_SANITY_PROJECT_ID}
           dataset={process.env.GATSBY_SANITY_DATASET}
         />

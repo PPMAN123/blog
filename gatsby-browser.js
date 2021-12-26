@@ -8,6 +8,10 @@ export function wrapPageElement({ element, props }) {
   return <Layout {...props}>{element}</Layout>;
 }
 
+export function shouldUpdateScroll(_) {
+  return false;
+}
+
 export function wrapRootElement({ element }) {
   return (
     <NotificationProvider>
