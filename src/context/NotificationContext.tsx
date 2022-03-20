@@ -43,7 +43,6 @@ const NotificationProvider: React.FC = ({ children }) => {
       removeNotificationWithId(notificationId);
       removeTimeOutStatus(notificationId);
     }, 2500);
-    console.log(notificationId, 'adding timeout', timeOut);
 
     setNotificationTimeoutStatus((prevNotificationTimeoutStatus) => ({
       ...prevNotificationTimeoutStatus,

@@ -3,7 +3,7 @@ import Notification, { NotificationsProps } from './Notification';
 import styled from 'styled-components';
 
 const NotificationContainer = styled.section`
-  position: absolute;
+  position: fixed;
   left: 10px;
   bottom: 10px;
   width: 300px;

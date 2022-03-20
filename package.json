@@ -7,6 +7,7 @@
   "keywords": [
     "gatsby"
   ],
+  "proxy": "https://zhoubo.netlify.app",
   "scripts": {
     "develop": "gatsby develop",
     "start": "cross-env NODE_OPTIONS=\"-r esm\" gatsby develop",
@@ -15,11 +16,13 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.0",
     "@sanity/block-content-to-react": "^3.0.0",
     "@types/react": "^17.0.18",
     "@types/react-dom": "^17.0.9",
     "@types/react-syntax-highlighter": "^13.5.2",
     "@types/styled-components": "^5.1.11",
+    "axios": "^0.24.0",
     "babel-plugin-styled-components": "^1.12.0",
     "dotenv": "^9.0.1",
     "gatsby": "^3.14.0",
@@ -27,6 +30,7 @@
     "gatsby-plugin-react-helmet": "^4.4.0",
     "gatsby-plugin-styled-components": "^4.4.0",
     "gatsby-source-sanity": "^7.0.4",
+    "js-cookie": "^3.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-google-recaptcha": "^2.1.0",
@@ -39,6 +43,7 @@
     "styled-components": "^5.3.0"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.1",
     "@types/react-google-recaptcha": "^2.1.2",
     "cross-env": "^7.0.3",
     "esm": "^3.2.25"

@@ -111,7 +111,6 @@ const Notification = ({ message, type, id }: NotificationsProps) => {
   }
 
   React.useEffect(() => {
-    console.log(hover, notificationTimeoutStatus[id]);
     if (hover) {
       removeTimeOutStatus(id, notificationTimeoutStatus[id]);
     } else {
